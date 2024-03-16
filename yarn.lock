@@ -5669,6 +5669,7 @@ __metadata:
     winston-daily-rotate-file: "npm:^5.0.0"
     zod: "npm:^3.22.4"
     zod-prisma-types: "npm:^3.1.6"
+    zod-validation-error: "npm:^3.0.3"
   languageName: unknown
   linkType: soft
 
@@ -7743,6 +7744,15 @@ __metadata:
   bin:
     zod-prisma-types: dist/bin.js
   checksum: cef986b25a0c0a081049f7c36d07bc26fe757e43d19aca25b16b71236010f768591e9cc401798e2c1d676e6dccfc303c9c0edef0a407756837c25b6987b8695e
+  languageName: node
+  linkType: hard
+
+"zod-validation-error@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "zod-validation-error@npm:3.0.3"
+  peerDependencies:
+    zod: ^3.18.0
+  checksum: 70bbf1e74ceda2b038986dad462d1a29be6f63bbcdf2542812dda3d9366588ee699cff0176f1d1c0e8a989cb9e4cce41c9783b751d1c30bf4f1940f08cd1b939
   languageName: node
   linkType: hard
 
