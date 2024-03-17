@@ -34,7 +34,7 @@ import { PrismaModule } from "./prisma/prisma.module";
         }),
         new winston.transports.DailyRotateFile({
           filename: "logs/app-%DATE%.log",
-          datePattern: "YYYY-MM-DD",
+          datePattern: "DD-MM-YYYY",
           zippedArchive: true,
           maxSize: "20m",
           maxFiles: "10d",
@@ -42,7 +42,7 @@ import { PrismaModule } from "./prisma/prisma.module";
         new winston.transports.DailyRotateFile({
           level: "error",
           filename: "logs/app-error-%DATE%.log",
-          datePattern: "YYYY-MM-DD",
+          datePattern: "DD-MM-YYYY",
           zippedArchive: true,
           maxSize: "20m",
           maxFiles: "30d",

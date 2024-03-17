@@ -17,6 +17,13 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "resolveJsonModule": true,
+    "types": ["node", "@types/jest"],
+    "paths": {
+      "src/*": ["./src/*"],
+      "prisma/*": ["./prisma/*"],
+      "test/*": ["./test/*"]
+    }
   }
 }

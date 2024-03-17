@@ -1,4 +1,5 @@
 import * as bcrypt from "bcrypt";
+import { v4 } from "uuid";
 import { Logger } from "winston";
 import {
   ForbiddenException,
@@ -10,7 +11,6 @@ import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 
 import { PrismaService } from "src/prisma/prisma.service";
 import { User } from "prisma/generated/zod";
-import { v4 } from "uuid";
 
 @Injectable()
 export class UsersService {

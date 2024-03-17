@@ -1,7 +1,7 @@
-import { ValidationFilter } from './validation.filter';
+import { ValidationFilter } from "./validation.filter";
 
-describe('ValidationFilter', () => {
-  it('should be defined', () => {
+describe("ValidationFilter", () => {
+  it("should be defined", () => {
     expect(new ValidationFilter()).toBeDefined();
   });
 });

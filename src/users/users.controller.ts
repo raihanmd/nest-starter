@@ -1,17 +1,13 @@
-import { Body, Controller, Inject, Ip, Post } from "@nestjs/common";
-import { UsersService } from "./users.service";
-import { ValidationPipe } from "src/validation/validation.pipe";
-import { Logger } from "winston";
-import { WINSTON_MODULE_PROVIDER } from "nest-winston";
-import { User, UserCreateInputSchema } from "prisma/generated/zod";
+import { Body, Controller, Ip, Post } from "@nestjs/common";
+
 import { Response } from "src/utils/Response";
+import { ValidationPipe } from "src/validation/validation.pipe";
+import { UsersService } from "./users.service";
+import { User, UserCreateInputSchema } from "prisma/generated/zod";
 
 @Controller("/v1/users")
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-    @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Post("/register")
   async register(
