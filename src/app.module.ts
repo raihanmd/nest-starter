@@ -7,9 +7,7 @@ import "winston-daily-rotate-file";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { UsersModule } from "./users/users.module";
-import { PostsModule } from "./posts/posts.module";
 import { PrismaModule } from "./prisma/prisma.module";
-import { ValidationModule } from "./validation/validation.module";
 
 @Module({
   imports: [
@@ -43,8 +41,6 @@ import { ValidationModule } from "./validation/validation.module";
         }),
         new winston.transports.DailyRotateFile({
           level: "error",
-          handleExceptions: true,
-          handleRejections: true,
           filename: "logs/app-error-%DATE%.log",
           datePattern: "YYYY-MM-DD",
           zippedArchive: true,
@@ -54,9 +50,7 @@ import { ValidationModule } from "./validation/validation.module";
       ],
     }),
     PrismaModule,
-    ValidationModule,
     UsersModule,
-    PostsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,8 +1,9 @@
 -- CreateTable
 CREATE TABLE `users` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `username` VARCHAR(15) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
+    `lastIp` VARCHAR(15) NULL,
 
     UNIQUE INDEX `users_username_key`(`username`),
     PRIMARY KEY (`id`)
