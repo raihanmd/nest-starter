@@ -7,8 +7,7 @@ import { fromZodError } from "zod-validation-error";
 @Catch(ZodError)
 export class ValidationFilter implements ExceptionFilter<ZodError> {
   catch(exception: ZodError, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
+    const response = host.switchToHttp().getResponse<Response>();
     const status = 400;
     response.status(status).json({
       message: fromZodError(exception).toString(),

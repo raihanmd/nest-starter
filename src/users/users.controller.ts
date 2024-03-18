@@ -1,10 +1,14 @@
-import { Body, Controller, Ip, Post } from "@nestjs/common";
+import { Body, Controller, Get, Ip, Post, UseGuards } from "@nestjs/common";
 
 import { Response } from "src/utils/Response";
 import { ValidationPipe } from "src/validation/validation.pipe";
 import { UsersService } from "./users.service";
 import { User, UserCreateInputSchema } from "prisma/generated/zod";
+import { RoleGuard } from "src/role/role.guard";
+import { Auth } from "src/auth/auth.decorator";
+import { Roles } from "src/role/roles.decorator";
 
+@UseGuards(RoleGuard)
 @Controller("/v1/users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -24,5 +28,11 @@ export class UsersController {
   ) {
     const res = await this.usersService.login({ ...loginReq, lastIp });
     return new Response(res, 200);
+  }
+
+  @Get("/arsip-negara")
+  @Roles(["ADMIN"])
+  async secret(@Auth() user: User) {
+    return { hello: `world ${user.role}` };
   }
 }

@@ -1,6 +1,6 @@
 import * as winston from "winston";
 import { ConfigModule } from "@nestjs/config";
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { WinstonModule } from "nest-winston";
 import "winston-daily-rotate-file";
 
@@ -8,6 +8,8 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { UsersModule } from "./users/users.module";
 import { PrismaModule } from "./prisma/prisma.module";
+import { AuthMiddleware } from "./auth/auth.middleware";
+import { ValidationService } from "./validation/validation.service";
 
 @Module({
   imports: [
@@ -53,6 +55,10 @@ import { PrismaModule } from "./prisma/prisma.module";
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ValidationService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes("/v1/users/arsip-negara");
+  }
+}

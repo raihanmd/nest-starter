@@ -10,6 +10,7 @@ async function bootstrap() {
 
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   app.useGlobalFilters(new ValidationFilter());
+  app.enableShutdownHooks();
   await app.listen(app.get(ConfigService).get("SERVER_PORT") ?? 3000);
 }
 bootstrap();
