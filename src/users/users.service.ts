@@ -10,7 +10,7 @@ import {
 import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 
 import { PrismaService } from "src/prisma/prisma.service";
-import { User } from "prisma/generated/zod";
+import { User } from "prisma/zod";
 
 @Injectable()
 export class UsersService {

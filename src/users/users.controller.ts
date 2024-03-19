@@ -3,10 +3,10 @@ import { Body, Controller, Get, Ip, Post, UseGuards } from "@nestjs/common";
 import { Response } from "src/utils/Response";
 import { ValidationPipe } from "src/validation/validation.pipe";
 import { UsersService } from "./users.service";
-import { User, UserCreateInputSchema } from "prisma/generated/zod";
 import { RoleGuard } from "src/role/role.guard";
 import { Auth } from "src/auth/auth.decorator";
 import { Roles } from "src/role/roles.decorator";
+import { User, UserOptionalDefaultsSchema } from "prisma/zod";
 
 @UseGuards(RoleGuard)
 @Controller("/v1/users")
@@ -15,7 +15,7 @@ export class UsersController {
 
   @Post("/register")
   async register(
-    @Body(new ValidationPipe(UserCreateInputSchema)) loginReq: User,
+    @Body(new ValidationPipe(UserOptionalDefaultsSchema)) loginReq: User,
   ) {
     const res = await this.usersService.register(loginReq);
     return new Response(res, 200);
@@ -23,7 +23,7 @@ export class UsersController {
 
   @Post("/login")
   async login(
-    @Body(new ValidationPipe(UserCreateInputSchema)) loginReq: User,
+    @Body(new ValidationPipe(UserOptionalDefaultsSchema)) loginReq: User,
     @Ip() lastIp: string,
   ) {
     const res = await this.usersService.login({ ...loginReq, lastIp });
