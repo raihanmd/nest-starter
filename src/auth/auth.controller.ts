@@ -1,6 +1,10 @@
-import { Body, Controller, Get, HttpCode, Post } from "@nestjs/common";
-import { ApiBody, ApiOkResponse, ApiTags } from "@nestjs/swagger";
-import { User } from "@prisma/client";
+import { Body, Controller, Get, HttpCode, Post, Req } from "@nestjs/common";
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOkResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 
 import { ResponseService } from "src/common/response/response.service";
 import { Public } from "src/common/decorators/public.decorator";
@@ -37,9 +41,10 @@ export class AuthController {
   }
 
   @HttpCode(200)
+  @ApiBearerAuth()
   @Get("/arsip-negara")
-  async secret(user: User) {
-    return { hello: `world ${user.role}`, role: user.role };
+  async secret(@Req() req: any) {
+    return { req: JSON.stringify(req?.user) };
   }
 
   @HttpCode(200)
