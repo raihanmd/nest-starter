@@ -2,16 +2,14 @@ import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class ResponseService {
-  success(payload: any, statusCode: number) {
+  success<T>(payload: T) {
     return {
-      statusCode,
       payload,
     };
   }
 
-  pagination(payload: any, meta: any, statusCode: number) {
+  pagination<T, J>(payload: T, meta: J) {
     return {
-      statusCode,
       payload,
       meta,
     };

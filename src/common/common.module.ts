@@ -10,6 +10,8 @@ import { ValidationService } from "./validation/validation.service";
 import { ResponseService } from "./response/response.service";
 import { ErrorFilter } from "./error/error.filter";
 import { JwtGuard } from "./guards/jwt.guard";
+import { LoggingService } from "./logging/logging.service";
+import { TinyUrlService } from "./tiny-url/tiny-url.service";
 
 @Global()
 @Module({
@@ -48,6 +50,8 @@ import { JwtGuard } from "./guards/jwt.guard";
     ValidationService,
     ResponseService,
     PrismaService,
+    LoggingService,
+    TinyUrlService,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
@@ -61,6 +65,12 @@ import { JwtGuard } from "./guards/jwt.guard";
       useClass: ErrorFilter,
     },
   ],
-  exports: [ValidationService, ResponseService, PrismaService],
+  exports: [
+    ValidationService,
+    ResponseService,
+    PrismaService,
+    LoggingService,
+    TinyUrlService,
+  ],
 })
 export class CommonModule {}
