@@ -1,13 +1,25 @@
-import { ArgumentsHost, Catch, ExceptionFilter } from "@nestjs/common";
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+} from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import { Response } from "express";
+import { LoggingService } from "../logging/logging.service";
 
-@Catch(ZodError, Prisma.PrismaClientKnownRequestError)
+@Catch(ZodError, Prisma.PrismaClientKnownRequestError, HttpException)
 export class ErrorFilter implements ExceptionFilter {
+  constructor(private readonly loggingService: LoggingService) {
+    this.loggingService.initiate("ErrorFilter");
+  }
+
   catch(exception: any, host: ArgumentsHost) {
     const response = host.switchToHttp().getResponse();
+
+    this.loggingService.error(exception);
 
     switch (true) {
       case exception instanceof ZodError:
@@ -19,6 +31,12 @@ export class ErrorFilter implements ExceptionFilter {
         break;
       case exception instanceof Prisma.PrismaClientKnownRequestError:
         this.handlePrismaError(exception, response);
+        break;
+      case exception instanceof HttpException:
+        response.status(exception.getStatus()).json({
+          message: exception.message || exception.getResponse(),
+          error: exception.name,
+        });
         break;
       default:
         response.status(exception.statusCode || 500).json({

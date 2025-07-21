@@ -16,7 +16,7 @@ export class TinyUrlService {
   async shortener(url: string) {
     try {
       const res = await fetch(
-        `https://${this.HOTSNAME}/create?api_token=${this.API_KEY}&url=${url}`,
+        `${this.HOTSNAME}/create?api_token=${this.API_KEY}&url=${url}`,
         {
           method: "POST",
           body: JSON.stringify({
