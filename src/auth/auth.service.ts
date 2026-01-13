@@ -1,100 +1,78 @@
-import * as bcrypt from "bcrypt";
-import { Logger } from "winston";
-import {
-  ForbiddenException,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from "@nestjs/common";
-import { WINSTON_MODULE_PROVIDER } from "nest-winston";
-import { JwtService } from "@nestjs/jwt";
-import { UserRole } from "@prisma/client";
+import * as bcrypt from 'bcrypt';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
-import { PrismaService } from "src/common/prisma/prisma.service";
-import { ValidationService } from "src/common/validation/validation.service";
-import { LoginUserDto, RegisterUserDto, UsersValidation } from "./zod";
+import { AuthLoginPayload } from './zod';
+import { PrismaService } from 'src/_common/prisma/prisma.service';
+import { ReqWithUser } from 'src/types';
 
 @Injectable()
 export class AuthService {
+  private logger = new Logger(AuthService.name);
+
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
     private readonly prismaService: PrismaService,
     private readonly jwtService: JwtService,
-    private readonly validationService: ValidationService,
   ) {}
 
-  async register(data: RegisterUserDto) {
-    const registerUser = this.validationService.validate(
-      UsersValidation.RESGISTER,
-      data,
-    );
-
-    const isUserExist = await this.prismaService.user.findFirst({
+  async login(
+    data: AuthLoginPayload,
+  ): Promise<{ token: string; user: ReqWithUser['user'] }> {
+    const user = await this.prismaService.user.findFirst({
       where: {
-        username: registerUser.username,
-      },
-    });
-
-    if (isUserExist) throw new ForbiddenException("User already exist");
-
-    registerUser.password = await bcrypt.hash(
-      registerUser.password as string,
-      10,
-    );
-
-    this.logger.info(`Register User: ${registerUser.username}`);
-
-    const user = await this.prismaService.user.create({
-      data: {
-        username: registerUser.username as string,
-        password: registerUser.password,
-        role: UserRole.MEMBER,
+        username: data.username,
       },
       select: {
         id: true,
         username: true,
-        role: true,
+        password: true,
+        role: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
-    return {
-      token: this.jwtService.sign({
-        id: user.id,
-        username: user.username,
-        role: user.role,
-      }),
-    };
-  }
-
-  async login(data: LoginUserDto) {
-    const loginUser = this.validationService.validate(
-      UsersValidation.LOGIN,
-      data,
-    );
-
-    const user = await this.prismaService.user.findFirst({
-      where: {
-        username: loginUser.username,
-      },
-    });
-
-    if (!user) throw new UnauthorizedException("Username or password wrong");
+    if (!user) throw new UnauthorizedException('Username or password wrong');
 
     const isMatch = await bcrypt.compare(
-      loginUser.password as string,
+      data.password as string,
       user.password,
     );
 
-    if (!isMatch) throw new UnauthorizedException("Username or password wrong");
+    if (!isMatch) throw new UnauthorizedException('Username or password wrong');
 
-    this.logger.info(`Login User: ${user.username}`);
+    this.logger.log(`Login User: ${user.username}`);
 
     return {
       token: this.jwtService.sign({
-        id: user.id,
-        username: user.username,
+        user: {
+          id: user.id,
+        },
         role: user.role,
       }),
+      user: {
+        id: user.id,
+        role: user.role!,
+      },
     };
+  }
+
+  async me(userId: string) {
+    return await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+      omit: {
+        created_at: true,
+        updated_at: true,
+        password: true,
+      },
+      include: {
+        role: true,
+      },
+    });
   }
 }
