@@ -1,55 +1,36 @@
-import { Body, Controller, Get, HttpCode, Post, Req } from "@nestjs/common";
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOkResponse,
-  ApiTags,
-} from "@nestjs/swagger";
+import { Body, Controller, Get, HttpCode, Post, Req } from '@nestjs/common';
 
-import { ResponseService } from "src/common/response/response.service";
-import { Public } from "src/common/decorators/public.decorator";
-import { AuthService } from "./auth.service";
-import { LoginUserDto, RegisterUserDto, UsersValidation } from "./zod";
+import { type AuthLoginPayload, UsersValidation } from './zod';
+import { type ReqWithUser } from 'src/types';
+import { AuthService } from './auth.service';
+import { ResponseService } from 'src/_common/response/response.service';
+import { ZodValidationPipeFactory } from 'src/_common/pipes/zod-validation-validation-pipe';
+import { Public } from 'src/_common/decorators/public.decorator';
 
-@ApiTags("Users")
-@Controller("/v1")
+@Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly responseService: ResponseService,
   ) {}
 
-  @HttpCode(201)
-  // @ApiBody({ type: RegisterUserDto })
-  // @ApiOkResponse({ type: RegisterResponse })
+  @HttpCode(200)
   @Public()
-  @Post("/auth/register")
-  async register(@Body() loginReq: RegisterUserDto) {
-    const res = await this.authService.register(loginReq);
-    return this.responseService.success(res);
+  @Post('login')
+  async login(
+    @Body(ZodValidationPipeFactory(UsersValidation.LOGIN))
+    loginReq: AuthLoginPayload,
+  ) {
+    const data = await this.authService.login(loginReq);
+
+    return this.responseService.success(data);
   }
 
   @HttpCode(200)
-  // @ApiBody({ type: LoginUserDto })
-  // @ApiOkResponse({ type: LoginResponse })
-  @Public()
-  @Post("/auth/login")
-  async login(@Body() loginReq: LoginUserDto) {
-    const res = await this.authService.login(loginReq);
-    return this.responseService.success(res);
-  }
+  @Get('me')
+  async me(@Req() { user }: ReqWithUser) {
+    const data = await this.authService.me(user.id);
 
-  @HttpCode(200)
-  @ApiBearerAuth()
-  @Get("/arsip-negara")
-  async secret(@Req() req: any) {
-    return { req: JSON.stringify(req?.user) };
-  }
-
-  @HttpCode(200)
-  @Get("/public")
-  @Public()
-  async public() {
-    return { hello: `world public` };
+    return this.responseService.success(data);
   }
 }

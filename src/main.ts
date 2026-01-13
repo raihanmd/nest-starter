@@ -1,31 +1,28 @@
-import { NestFactory } from "@nestjs/core";
-import { ConfigService } from "@nestjs/config";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
+import { NestFactory } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 
-import { AppModule } from "./app.module";
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { AppModule } from './app.module';
+
+const WHILTELIST_ORIGIN = ['http://localhost:3005'];
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const config = new DocumentBuilder()
-    .setTitle("Raihanmd NestAPI Starter")
-    .setDescription("Hello world")
-    .setVersion("1.0")
-    .addBearerAuth({
-      description: `Please enter token in here`,
-      name: "Authorization",
-      type: "http",
-      in: "Header",
-    })
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("/v1", app, document, {
-    swaggerOptions: { defaultModelsExpandDepth: -1 },
+  app.enableCors({
+    origin: WHILTELIST_ORIGIN,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Accept'],
   });
 
-  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+  app.setGlobalPrefix('v1');
+
   app.enableShutdownHooks();
-  await app.listen(app.get(ConfigService).get("SERVER_PORT") ?? 3000);
+
+  const config = app.get(ConfigService);
+  const port = config.get<number>('SERVER_PORT') ?? 3000;
+
+  await app.listen(port);
 }
+
 bootstrap();
