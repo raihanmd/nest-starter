@@ -24,8 +24,9 @@
     "strict": true,
     "paths": {
       "src/*": ["./src/*"]
-    }
+    },
+    "types": ["jest", "node"]
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "jest.setup.ts"],
   "exclude": ["node_modules", "dist", "test", "coverage"]
 }

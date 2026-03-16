@@ -5,12 +5,17 @@
   "compilerOptions": {
     "deleteOutDir": false,
     "builder": "swc",
+    "outputFileExtension": ".js",
     "assets": [
       {
         "include": "../generated/prisma",
         "outDir": "dist/generated/prisma",
         "watchAssets": true
       }
-    ]
-  }
+    ],
+    "webpack": false,
+    "tsConfigPath": "tsconfig.build.json"
+  },
+  "monorepo": false,
+  "root": ""
 }
