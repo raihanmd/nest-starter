@@ -4,11 +4,11 @@ import {
   PipeTransform,
   Type,
   mixin,
-} from '@nestjs/common';
+} from "@nestjs/common";
 import {
   FileValidationType,
   ValidationService,
-} from '../validation/validation.service';
+} from "../validation/validation.service";
 
 interface FileValidationPipeOptions {
   required?: boolean;
@@ -25,7 +25,7 @@ export function FileValidationPipeFactory(
     transform(file: Express.Multer.File) {
       if (!file) {
         if (options.required) {
-          throw new BadRequestException('No file uploaded');
+          throw new BadRequestException("No file uploaded");
         }
         return null;
       }

@@ -1,0 +1,9 @@
+{
+  "jsc": {
+    "target": "es2023",
+    "baseUrl": "./src",
+    "paths": { "*": ["./*"] }
+  },
+  "module": { "type": "es6" },
+  "sourceMaps": true
+}

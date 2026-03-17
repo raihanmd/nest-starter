@@ -1,10 +1,10 @@
-import * as bcrypt from 'bcrypt';
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from "bcrypt";
+import { Injectable, Logger, UnauthorizedException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 
-import { AuthLoginPayload } from './zod';
-import { PrismaService } from 'src/_common/prisma/prisma.service';
-import { ReqWithUser } from 'src/types';
+import { AuthLoginPayload } from "./zod";
+import { PrismaService } from "src/_common/prisma/prisma.service";
+import { ReqWithUser } from "src/types";
 
 @Injectable()
 export class AuthService {
@@ -17,7 +17,7 @@ export class AuthService {
 
   async login(
     data: AuthLoginPayload,
-  ): Promise<{ token: string; user: ReqWithUser['user'] }> {
+  ): Promise<{ token: string; user: ReqWithUser["user"] }> {
     const user = await this.prismaService.user.findFirst({
       where: {
         username: data.username,
@@ -35,14 +35,11 @@ export class AuthService {
       },
     });
 
-    if (!user) throw new UnauthorizedException('Username or password wrong');
+    if (!user) throw new UnauthorizedException("Username or password wrong");
 
-    const isMatch = await bcrypt.compare(
-      data.password as string,
-      user.password,
-    );
+    const isMatch = await bcrypt.compare(data.password, user.password);
 
-    if (!isMatch) throw new UnauthorizedException('Username or password wrong');
+    if (!isMatch) throw new UnauthorizedException("Username or password wrong");
 
     this.logger.log(`Login User: ${user.username}`);
 

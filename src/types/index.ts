@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request } from "express";
 
 export type ReqWithUser = Request & {
   user: {
@@ -11,9 +11,9 @@ export type ReqWithUser = Request & {
 };
 
 export enum EUserRole {
-  SUPER_ADMIN = 'Super Admin',
-  USER = 'User',
-  ADMIN = 'Admin',
+  SUPER_ADMIN = "Super Admin",
+  USER = "User",
+  ADMIN = "Admin",
 }
 
 declare global {

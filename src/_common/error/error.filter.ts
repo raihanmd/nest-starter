@@ -4,10 +4,10 @@ import {
   ExceptionFilter,
   HttpException,
   Logger,
-} from '@nestjs/common';
-import { Response } from 'express';
-import { Prisma } from 'src/generated/prisma/client';
-import z, { ZodError } from 'zod';
+} from "@nestjs/common";
+import { Response } from "express";
+import { Prisma } from "../../generated/prisma/client";
+import z, { ZodError } from "zod";
 
 @Catch()
 export class ErrorFilter implements ExceptionFilter {
@@ -18,7 +18,7 @@ export class ErrorFilter implements ExceptionFilter {
 
     switch (true) {
       case exception instanceof ZodError:
-        this.logger.error('Zod error caught:', exception);
+        this.logger.error("Zod error caught:", exception);
         response.status(400).json({
           message: z.flattenError(exception),
           error: "Validation error",
@@ -26,15 +26,15 @@ export class ErrorFilter implements ExceptionFilter {
         });
         break;
       case exception instanceof Prisma.PrismaClientKnownRequestError:
-        this.logger.error('Prisma error caught:', exception);
+        this.logger.error("Prisma error caught:", exception);
         this.handlePrismaError(exception, response);
         break;
       case exception instanceof HttpException:
-        this.logger.error('HTTP error caught:', exception);
+        this.logger.error("HTTP error caught:", exception);
         this.handleHttpException(exception, response);
         break;
       default:
-        this.logger.error('Unknown error caught:', exception);
+        this.logger.error("Unknown error caught:", exception);
         this.handleUnknownError(exception, response);
     }
   }
@@ -49,25 +49,25 @@ export class ErrorFilter implements ExceptionFilter {
     > = {
       P2002: {
         statusCode: 409,
-        message: 'Data already exists. Please use different value.',
-        error: 'Duplicate Entry',
+        message: "Data already exists. Please use different value.",
+        error: "Duplicate Entry",
       },
       P2003: {
         statusCode: 400,
-        message: 'Cannot delete or update: related data exists.',
-        error: 'Foreign Key Constraint',
+        message: "Cannot delete or update: related data exists.",
+        error: "Foreign Key Constraint",
       },
       P2025: {
         statusCode: 404,
-        message: 'Record not found.',
-        error: 'Not Found',
+        message: "Record not found.",
+        error: "Not Found",
       },
     };
 
     const errorResponse = prismaErrorMap[exception.code] || {
       statusCode: 500,
       message: exception.message,
-      error: 'Database Error',
+      error: "Database Error",
     };
 
     this.logger.error(`Prisma Error [${exception.code}]: ${exception.message}`);
@@ -83,12 +83,12 @@ export class ErrorFilter implements ExceptionFilter {
 
     let message: string;
 
-    if (typeof exceptionResponse === 'string') {
+    if (typeof exceptionResponse === "string") {
       message = exceptionResponse;
     } else if (
       exceptionResponse &&
-      typeof exceptionResponse === 'object' &&
-      'message' in exceptionResponse
+      typeof exceptionResponse === "object" &&
+      "message" in exceptionResponse
     ) {
       message = (exceptionResponse as { message: string }).message;
     } else {
@@ -105,27 +105,27 @@ export class ErrorFilter implements ExceptionFilter {
     let statusCode = 500;
     if (
       exception &&
-      typeof exception === 'object' &&
-      'statusCode' in exception &&
-      typeof (exception as { statusCode: unknown }).statusCode === 'number'
+      typeof exception === "object" &&
+      "statusCode" in exception &&
+      typeof (exception as { statusCode: unknown }).statusCode === "number"
     ) {
       statusCode = (exception as { statusCode: number }).statusCode;
     }
-    let message = 'Internal server error';
+    let message = "Internal server error";
 
     if (
       exception &&
-      typeof exception === 'object' &&
-      'message' in exception &&
-      typeof (exception as { message: unknown }).message === 'string'
+      typeof exception === "object" &&
+      "message" in exception &&
+      typeof (exception as { message: unknown }).message === "string"
     ) {
       message = (exception as { message: string }).message;
     }
-    this.logger.error('Unknown error:', exception);
+    this.logger.error("Unknown error:", exception);
 
     response.status(statusCode).json({
       message,
-      error: 'Internal Server Error',
+      error: "Internal Server Error",
     });
   }
 }

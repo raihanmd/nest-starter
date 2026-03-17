@@ -1,6 +1,6 @@
-import { Injectable, Type, mixin } from '@nestjs/common';
-import { ZodType } from 'zod';
-import { ValidationService } from '../validation/validation.service';
+import { Injectable, Type, mixin } from "@nestjs/common";
+import { ZodType } from "zod";
+import { ValidationService } from "../validation/validation.service";
 
 export function ZodValidationPipeFactory<T>(schema: ZodType<T>): Type<any> {
   @Injectable()

@@ -4,7 +4,7 @@ import { z } from "zod";
 import {
   ValidationService,
   FileValidationSchemas,
-} from "../validation/validation.service.js";
+} from "../validation/validation.service";
 
 describe("ValidationService", () => {
   let service: ValidationService;

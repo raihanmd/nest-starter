@@ -1,4 +1,4 @@
-import { EUserRole } from "../types/index.js";
+import { EUserRole } from "../types/index";
 
 export const mockUsers = {
   admin: {
